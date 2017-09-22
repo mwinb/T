@@ -234,7 +234,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
         
 
-    elif(str(inp)== "-vL"):
+    elif(str(inp) == "-vl"):
         clear()
         for i in range(len(lines)-1):
             print str(i) + ": " + lines[i]
