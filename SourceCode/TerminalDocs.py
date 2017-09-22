@@ -1,5 +1,5 @@
 #Created by Michael Winberry Feb 5 2017
-#Version Created April 20 2017
+#Version Created Sep 22 2017
 #Terminal Docs Work station and Line by Line editor
 #For education and personal use only
  
@@ -17,9 +17,14 @@ def main():
     if(len(sys.argv)-1 >= 1):
         checkPath = sys.argv[1]
         del sys.argv[1]
+ 
+    #If there is no path passed the path is set to current working directory
     else:
         checkPath = os.getcwd()
         
+    #checks if path is an existing file
+    #Uses path as document. Fills array and begins "writer" function
+ 
     if(os.path.isfile(checkPath)):
         path = str(os.path.abspath(checkPath))
         swapPath = path + "-swap"
@@ -27,20 +32,24 @@ def main():
         save(swapPath,lines)
         position = 0
         saveState = writer(swapPath,path,lines,0,position)
-    elif(os.path.exists(checkPath) == False):
-        path = cNewCmd(os.path.abspath(checkPath))
+ 
+    elif(os.path.isdir(checkPath) == False):
+        path = str(os.path.abspath(checkPath))
+        cNewCmd(path)
         swapPath = path + "-swap"
         lines = fillArray(path)
         save(swapPath,lines)
         position = 0
-        saveState = writer(swapPath,path,lines,0,position)
+ 
     else:
-        variables = mainMenu()
-        swapPath = variables[0]
-        path = variables[1]
-        lines = variables[2]
-        position = variables[3]
-        saveState = writer(swapPath,path,lines,0,position)
+        
+        path = mainMenu()
+        swapPath = path + "-swap"
+        lines = fillArray(path)
+        save(swapPath,lines)
+        position = 0
+ 
+    saveState = writer(swapPath,path,lines,0,position)
 
     swapPath = saveState[1]
  
@@ -51,7 +60,7 @@ def main():
         save(path,lines)
         deleteSwap(swapPath)
         
-    main()
+    raise SystemExit
     
 def writer(swapPath,path,lines,start,position):
     killSwitch = 0
@@ -64,16 +73,16 @@ def writer(swapPath,path,lines,start,position):
         clear()
         save(path,lines)
         lines = fillArray(path)
-        if(lines == []):
+        if(len(lines) <= 1 and lines[0] == ""):
             with open(path,'w+') as f:
-                f.write(str(raw_input("Enter First Line: ")) + "\n")
+                f.write(str(raw_input("0: ")) + "\n")
         if(start < 0):
             start = 0;
         count = start
         
         if(position > len(lines)-1):
-            position = len(lines)-1
-            
+            position = 0
+        print path
         print "Help Menu (-h)"
         
         while( count <= position):
@@ -109,7 +118,7 @@ def writer(swapPath,path,lines,start,position):
     return parameters
         
 def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
-    if(str(inp) == "-paste"):
+    if(str(inp) == "-pst"):
         inp = copy
     if(str(inp) == "-q"):
         clear()
@@ -135,54 +144,55 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         print "-------------------------------------------"
         print "-| -g       |Goes to Specified Line       -"
         print "-------------------------------------------"
-        print "-| -pSelect |Prints Selection, Insert     -"
+        print "-| -ps      |Prints Selection, Insert     -"
         print "-|          |Starts at End of Selection   -"
         print "-------------------------------------------"
-        print "-| -rSelect |Replaces Selection One Line  -"
+        print "-| -rs      |Replaces Selection One Line -"
         print "-|          |At a Time                    -"
         print "-------------------------------------------"
-        print "-| -dSelect |Deletes Selection            -"
+        print "-| -ds      |Deletes Selection            -"
         print "-------------------------------------------"
-        print "-| -vSelect |View Selection Without Lines -"
+        print "-| -vs      |View Selection Without Lines -"
         print "-------------------------------------------"
         print "-| -dcl     |Deletes Current Line         -"
         print "-------------------------------------------"
-        print "-| -delete  |Deletes Specified Line       -"
+        print "-| -del     |Deletes Specified Line       -"
         print "-------------------------------------------"
         print "-| -rcl     |Replaces Current Line        -"
         print "-------------------------------------------"
-        print "-| -replace |Replaces Specified Line      -"
+        print "-| -rep     |Replaces Specified Line      -"
         print "-------------------------------------------"
         print "-| -exp     |Exports Current File to New  -"
-        print "-------------------------------------------"
-        print "-| -oe      |Opens New Program in Default -"
-        print "-|          |Environment                  -"
         print "-------------------------------------------"
         print "-| -end     |Jump to End                  -"
         print "-------------------------------------------"
         print "-| -begin   |Jump to Beginning            -"
         print "-------------------------------------------"
-        print "-| -viewL   |View Whole Doc With Line #'s -"
+        print "-| -vl      |View Whole Doc With Line #'s -"
         print "-------------------------------------------"
-        print "-| -view    |View Without Line #'s        -"
+        print "-| -v       |View Without Line #'s        -"
         print "-------------------------------------------"
-        print "-| -undo    |Undo Last Change             -"
+        print "-| -ud      |Undo Last Change             -"
         print "-------------------------------------------"
-        print "-| -redo    |Redo Last Change             -"
+        print "-| -rd      |Redo Last Change             -"
         print "-------------------------------------------"
-        print "-| -copy    |Store Text for Insert        -"
+        print "-| -cp      |Store Text for Insert        -"
         print "-------------------------------------------"
-        print "-| -cSelect |Store Selection for Insert   -"
+        print "-| -cs      |Store Selection for Insert   -"
         print "-------------------------------------------"
         print "-| -ccl     |Copy Current Line for Insert -"
         print "-------------------------------------------"
-        print "-| -paste   |Paste to Current line        -"
+        print "-| -pst     |Paste to Current Line        -"
         print "-------------------------------------------"
+        print "-| -oe      |Opens New Program in Default -"
+        print "-|          |Environment                  -"
+        print "-------------------------------------------"
+
         
         raw_input("Continue? (Hit Enter) ")
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-copy"):
+    elif(str(inp) == "-cp"):
         copy = str(raw_input("Store Input: "))
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
    
@@ -190,19 +200,19 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         copy = str(lines[position])
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-cSelect"):
+    elif(str(inp) == "-cs"):
         try:
             start = int(raw_input("Enter Starting Line: "))
             end = int(raw_input("Enter Ending Line: "))
-            count = start
+            tempCount = start
             copy = ""
             if (end > (len(lines)-1)):
                 raise Exception
             if (start < 0):
                 raise Exception
-            while(count <= end):
+            while(tempCount <= end):
                 copy += str(lines[count])
-                count += 1
+                tempCount +=1
             return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
         except Exception:
             print "----Invalid Selection----"
@@ -210,13 +220,13 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
             raw_input("Continue? (Hit Enter) ")
             return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-undo"):
+    elif(str(inp) == "-ud"):
         redoStack = fillArray(path)
         save(path,undoStack)
         lines = fillArray(path)
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
  
-    elif(str(inp) == "-redo"):
+    elif(str(inp) == "-rd"):
         undoStack = fillArray(path)
         save(path,redoStack)
         lines = fillArray(path)
@@ -224,7 +234,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
         
 
-    elif(str(inp)== "-viewL"):
+    elif(str(inp)== "-vL"):
         clear()
         for i in range(len(lines)-1):
             print str(i) + ": " + lines[i]
@@ -236,7 +246,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         raw_input("Continue? (Hit Enter) ")
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
 
-    elif(str(inp)== "-view"):
+    elif(str(inp)== "-v"):
         clear()
         for i in range(len(lines)-1):
             print lines[i]
@@ -247,33 +257,31 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         raw_input("Continue? (Hit Enter) ")
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp)=="-vSelect"):
+    elif(str(inp)=="-vs"):
         try:
             start = int(raw_input("Enter Starting Line: "))
             end   = int(raw_input("Enter Ending Line:   "))
             clear()
-            count = start
-            while (count <= end):
+            while (start <= end):
                 print lines[count]
-                count += 1
+                start += 1
             raw_input("Continue? (Hit Enter) ")
-            return [0,swapPath,path,lines,position-20,position,copy]
+            return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
         except Exception:
             print "----Invalid Entry----"
             raw_input("Continue? (Hit Enter) ")
             return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
- 
     
     elif(str(inp)=="-o"):
         clear()
         programOpen(path)
         continueInp = raw_input("Continue? (q) to Quit: ")
         if(continueInp == "q"):
-            return [1,swapPath,path,lines,0,position,copy,undoStack,redoStack]
+            return [1,swapPath,path,lines,position-20,position,undoStack,redoStack]
         else:
             lines = fillArray(path)
             save(path,lines)
-            return [0,swapPath,path,lines,len(lines)-20,len(lines)-1,copy,undoStack,redoStack]
+            return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
     elif(str(inp) == "-end"):
         return [0,swapPath,path,lines,len(lines)-20,len(lines)-1,copy,undoStack,redoStack]
@@ -281,34 +289,33 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
     elif(str(inp) == "-begin"):
         return [0,swapPath,path,lines,0,0,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-pSelect"):
+    elif(str(inp) == "-ps"):
         try:
             start = int(raw_input("Enter Starting Line: "))
             end = int(raw_input("Enter Ending Line: "))
-            clear()
             return [0,swapPath,path,lines,start,end,copy,undoStack,redoStack]
         except Exception:
             print "----Invalid Entry----"
             raw_input("Continue? (Hit Enter) ")
-            return [0,swapPath,path,lines,len(lines)-20,len(lines)-1,copy]
+            return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
  
-    elif(str(inp) == "-rSelect"):
+    elif(str(inp) == "-rs"):
         try:
             start = int(raw_input("Enter Starting Line: "))
-            count = start
+            tempCount = start
             end = int(raw_input("Enter Ending Line: "))
             clear()
             undoStack = fillArray(path)
-            while(count <= end):
+            while(tempCount <= end):
                 print("Replace? (n) to Return without Changes")
-                print(str(count) + ": " + lines[count])
-                inp = raw_input(str(count) + ": ")
+                print str(tempCount) + ": " + lines[tempCount]
+                inp = raw_input(str(tempCount) + ": ")
                 if (str(inp) != "n"):
-                    lines[count] = str(inp) + '\n'
-                    count += 1
+                    lines[tempCount] = str(inp) + '\n'
+                    tempCount += 1
                     save(path,lines)
                 else:
-                    count += 1
+                    tempCount += 1
             return [0,swapPath,path,lines,end-20,end,copy,undoStack,redoStack]
         except Exception:
             print "----Invalid Entry-----"
@@ -316,7 +323,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
             undoStack = fillArray(path)
             return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
  
-    elif(str(inp)== "-replace"):
+    elif(str(inp) == "-rep"):
         try:
             selection = int(raw_input("Enter Line # to Replace: "))
             print(str(selection) + ": " + lines[selection])
@@ -333,7 +340,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
                     undoStack = fillArray(path)
                     save(path,lines)
                     undoStack = fillArray(path)
-                    return [0,swapPath,path,lines,position-20,position,copy]
+                    return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
                 else:
                     print "----No Changes Made----"
                     raw_input("Continue? (Hit Enter) ")
@@ -363,7 +370,7 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
                 raw_input("Continue? (Hit Enter) ")
                 return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-delete"):
+    elif(str(inp) == "-del"):
         try:
             inp = int(raw_input("Line Number: "))
             print(str(inp) + ": " + lines[inp])
@@ -382,20 +389,20 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
             raw_input("Continue? (Hit Enter) ")
             return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
-    elif(str(inp)== "-dSelect"):
+    elif(str(inp) == "-ds"):
         try:
             start = int(raw_input("Enter Starting Line: "))
             end = int(raw_input("Enter Ending Line: "))
-            count = start
+            tempCount = start
             if (end > (len(lines)-1)):
                 raise Exception
             if (start < 0):
                 raise Exception
             undoStack = fillArray(path)
             
-            while(count <= end):
+            while(tempCount <= end):
                 del lines[start]
-                count += 1
+                tempCount += 1
             save(path,lines)
             if(position > (len(lines)-1)):
                 return [0,swapPath,path,lines,len(lines)-20,len(lines)-1,copy,undoStack,redoStack]
@@ -448,10 +455,6 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
         else:
             return [0,swapPath,path,lines,0,position,copy,undoStack,redoStack]
     
-    elif(str(inp) == "-oe"):
-        path2 = openPath()
-        programOpen(path2)
-        return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
     
     elif(str(inp) == "-run"):
         killSwitch = 0
@@ -462,7 +465,12 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
                 clear()
                 killSwitch = 1
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
-    
+ 
+    elif(str(inp) == "-oe"):
+        path2 = openPath()
+        programOpen(path2)
+        return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
+
     elif(position == len(lines)-1 and str(inp) != ""):
         undoStack = fillArray(path)
         lines.append(str(inp) + '\n')
@@ -487,7 +495,6 @@ def executeCommand(swapPath,path,lines,position,inp,copy,undoStack,redoStack):
     else:
         return [0,swapPath,path,lines,position-20,position,copy,undoStack,redoStack]
        
- 
 def deleteSwap(path):
     os.remove(path)
     return
@@ -544,13 +551,7 @@ def mainMenu():
         else:
             path = openPath()
             killSwitch = True
-
-    lines = fillArray(path)
-    swapPath = path + "-swap"
-    save(swapPath,lines)
-    position = 0
-    variables = [swapPath,path,lines,position]
-    return variables
+    return path
     
 def getPath():
     try:
