@@ -1,7 +1,7 @@
 #Created by Michael Winberry Feb 5 2017
 #Version Created Sep 22 2017
 #Terminal Docs Work station and Line by Line editor
-#For education and personal use only
+
  
 import os
 import sys
