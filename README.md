@@ -10,7 +10,7 @@ Enter -o to open into default program and move back and forth between full ide a
 
 Enter -run to run Terminal Commands
 
-**Typing and entering text simply inserts on the current line and does not replace the text previously on that line. In order to replace any text use -rcl (replace current line), -rep (input line # to replace), -rs (enter starting line # and ending line # to replace selection line by line)** 
+**Typing and entering text simply inserts on the current line and does not replace the text previously on that line. In order to replace any text use -rcl (replace current line), -rep (input line # to replace), -rs (enter starting line # and ending line # to replace selection line by line)
  
 -created by Michael Winberry
 -mwinb.github.io
