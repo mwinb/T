@@ -1,3 +1,7 @@
+Please defer to Terminal Docs Lite version ie (termdocs)
+All testing and work on TerminalDocs has been temporarily put on hold. 
+
+
 # TerminalDocs
 
 Termdocs offers a command line only version that is far more convenient if you are comfortable working strictly within a Shell. Store in C:\System32\ for Windows /usr/bin/ for Mac and Linux. 
