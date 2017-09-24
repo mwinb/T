@@ -1,7 +1,7 @@
 #Created by Michael Winberry Feb 5 2017
 #Version Created Sep 22 2017
 #Terminal Docs Work station and Line by Line editor
-
+#For education and personal use only
  
 import os
 import sys
@@ -69,21 +69,28 @@ def writer(swapPath,path,lines,start,position):
     redoStack = []
     undoStack = fillArray(path)
     redoStack = fillArray(path)
+ 
     while(killSwitch == 0):
         clear()
         save(path,lines)
         lines = fillArray(path)
-        if(len(lines) <= 1 and lines[0] == ""):
+        print path
+        print "Help Menu (-h)"
+        if(lines == []):
             with open(path,'w+') as f:
                 f.write(str(raw_input("0: ")) + "\n")
+            lines = fillArray(path)
+            start = 0
+            position = 1
+            clear()
+            print path
+            print "Help Menu (-h)"
         if(start < 0):
             start = 0;
         count = start
         
         if(position > len(lines)-1):
             position = 0
-        print path
-        print "Help Menu (-h)"
         
         while( count <= position):
             print str(count) + ": " + lines[count]
