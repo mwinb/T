@@ -1,0 +1,17 @@
+Instructions.txt
+————————————————————————————————————————————————————————————
+|This Program can be used to open unsupported file types.  |
+————————————————————————————————————————————————————————————
+-If the file opened is not in plain text type -o (open) and enter to open the file in its native application (ie: .pdf, .docx)
+ 
+-Drag Applet into applications folder to install in launchpad otherwise app can be used by double clicking on it to run.
+
+-May require additional permissions to run. Open preferences —> Security and Privacy ->
+General -> “click the lock to make changes” -> Allow apps downloaded from: -> select TerminalDocs after attempting to run. 
+
+-Can be run from Terminal after copying into applications folder by typing “open -a TerminalDocs”
+
+ 
+ 
+-Created by Michael Winberry 
+ 
